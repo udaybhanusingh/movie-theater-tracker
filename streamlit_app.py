@@ -34,9 +34,24 @@ movie_titles = [
     f"{movie['title']} ({movie['release_date'][0:4]})"
     for movie in movies]
 
-selected_movie = st.selectbox(
-    "Choose a movie",
-    movie_titles
+members = ['Uday','Francisco','Abel','John','Yael','Rory','Rodrigo','Ricky','Mercedes','Tyra']
+members.sort()
+
+selected_member = st.selectbox(
+    "Who are you?:",
+    members,
+    index=None,
+    placeholder="Select...",
+    accept_new_options = False
 )
 
-st.write("Selected:", selected_movie)
+selected_movie = st.selectbox(
+    "What do you wanna watch?",
+    movie_titles,
+    index=None,
+    placeholder="Select...",
+    accept_new_options = False
+)
+
+st.write("Adding to list:", selected_movie)
+
