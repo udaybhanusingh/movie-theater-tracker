@@ -1,5 +1,7 @@
 import streamlit as st
 import requests
+import gspread
+from google.oauth2.service_account import Credentials
 
 st.set_page_config(page_title="Gay Nights Theater Trips", page_icon="🎬")
 
@@ -7,6 +9,19 @@ st.title("Theater Trips")
 st.write("Now playing movies from TMDb")
 
 TMDB_ACCESS_TOKEN = st.secrets["TMDB_ACCESS_TOKEN"]
+GOOGLE_SHEET_ID = st.secrets["GOOGLE_SHEET_ID"]
+SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
+
+def get_worksheet():
+    creds = Credentials.from_service_account_info(
+        st.secrets["gcp_service_account"],
+        scopes=SCOPES
+    )
+
+    client = gspread.authorize(creds)
+    spreadsheet = client.open_by_key(GOOGLE_SHEET_ID)
+
+    return spreadsheet.sheet1
 
 @st.cache_data(ttl=60 * 60)
 def get_now_playing_movies():
@@ -55,3 +70,7 @@ selected_movie = st.selectbox(
 
 st.write("Adding to list:", selected_movie)
 
+if st.button("Test spreadsheet connection"):
+    worksheet = get_worksheet()
+    worksheet.update_acell("A1", "Connected!")
+    st.success("Spreadsheet connection worked.")
