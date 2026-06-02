@@ -1,6 +1,7 @@
 import streamlit as st
 import requests
 import gspread
+import pandas as pd
 from google.oauth2.service_account import Credentials
 from datetime import date, timedelta
 
@@ -326,4 +327,21 @@ else:
 st.iframe(
     "https://tenor.com/embed/27063004",
     height=350
+)
+
+worksheet = get_worksheet()
+all_values = worksheet.get_all_values()
+
+df = pd.DataFrame(
+    all_values[1:],
+    columns=all_values[0]
+)
+
+display_df = df[
+    ["title"] + members
+]
+
+st.dataframe(
+    display_df,
+    use_container_width=True
 )
