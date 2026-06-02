@@ -60,6 +60,7 @@ def get_now_playing_movies():
 
 movies = get_now_playing_movies()
 
+@st.cache_data(ttl=60 * 60)
 def get_upcoming_movies():
     url = "https://api.themoviedb.org/3/movie/upcoming"
 
@@ -78,9 +79,10 @@ def get_upcoming_movies():
     response.raise_for_status()
 
     total_pages = response.json().get("total_pages", 1)
+    max_pages = min(total_pages, 5)
     all_movies = response.json().get("results", [])
 
-    for page in range(2, total_pages + 1):
+    for page in range(2, max_pages + 1):
         params["page"] = page
         response = requests.get(url, headers=headers, params=params)
         response.raise_for_status()
@@ -95,10 +97,16 @@ now_showing_movie_titles = [
     for movie in movies]
 
 upcoming_movie_titles = [
-    f"{movie['title']} ({movie['release_date'][0:4]})"
+    f"{movie['title']} ({movie.get('release_date', 'Unknown')[:4]})"
     for movie in upcoming_movies]
 
-movie_titles = now_showing_movie_titles + upcoming_movie_titles
+all_movies = movies + upcoming_movies
+
+movie_lookup = {
+    f"{movie['title']} ({movie['release_date'][:4]})": movie
+    for movie in all_movies}
+
+movie_titles = sorted(movie_lookup.keys())
 
 members = ['Uday','Francisco','Abel','John','Yael','Rory','Rodrigo','Ricky','Mercedes','Tyra']
 members.sort()
