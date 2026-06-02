@@ -221,7 +221,6 @@ def get_most_requested(limit=4):
     movie_counts = []
 
     for row in all_values[1:]:
-        request_count = 0
         requesters = []
 
         for col in member_cols:
@@ -230,17 +229,13 @@ def get_most_requested(limit=4):
 
         request_count = len(requesters)
 
-        for col in member_cols:
-            if len(row) > col and str(row[col]).upper() == "TRUE":
-                request_count += 1
-
         if request_count > 0:
             movie_counts.append({
-            "title": row[title_col],
-            "poster_url": row[poster_col],
-            "request_count": request_count,
-            "requesters": requesters
-        })
+                "title": row[title_col],
+                "poster_url": row[poster_col],
+                "request_count": request_count,
+                "requesters": requesters
+            })
 
     movie_counts.sort(
         key=lambda movie: movie["request_count"],
