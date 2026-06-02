@@ -65,12 +65,48 @@ selected_movie = st.selectbox(
     movie_titles,
     index=None,
     placeholder="Select...",
-    accept_new_options = False
+    accept_new_options = False,
+    disabled = selected_member is None
 )
 
-st.write("Adding to list:", selected_movie)
+movie_lookup = {
+    f"{movie['title']} ({movie['release_date'][0:4]})": movie
+    for movie in movies
+}
 
-if st.button("Test spreadsheet connection"):
+if st.button("Add to list", disabled=selected_member is None or selected_movie is None):
     worksheet = get_worksheet()
-    worksheet.update_acell("A1", "Connected!")
-    st.success("Spreadsheet connection worked.")
+    movie = movie_lookup[selected_movie]
+
+    all_values = worksheet.get_all_values()
+    headers = all_values[0]
+
+    tmdb_id_col = headers.index("tmdb_id") + 1
+    member_col = headers.index(selected_member) + 1
+
+    movie_row = None
+
+    for row_number, row in enumerate(all_values[1:], start=2):
+        if row[tmdb_id_col - 1] == str(movie["id"]):
+            movie_row = row_number
+            break
+
+    if movie_row is None:
+        poster_url = ""
+        if movie.get("poster_path"):
+            poster_url = f"https://image.tmdb.org/t/p/w500{movie['poster_path']}"
+
+        new_row = [""] * len(headers)
+        new_row[headers.index("tmdb_id")] = movie["id"]
+        new_row[headers.index("title")] = movie["title"]
+        new_row[headers.index("release_date")] = movie.get("release_date", "")
+        new_row[headers.index("poster_url")] = poster_url
+
+        worksheet.append_row(new_row)
+
+        all_values = worksheet.get_all_values()
+        movie_row = len(all_values)
+    
+    worksheet.update_cell(movie_row, member_col, "TRUE")
+
+    st.success(f"Added {movie['title']} for {selected_member}.")
