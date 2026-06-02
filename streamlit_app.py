@@ -174,3 +174,64 @@ if selected_member is not None:
 
     else:
         st.write("You haven't added any movies yet.")
+
+def get_most_requested(limit=4):
+    worksheet = get_worksheet()
+    all_values = worksheet.get_all_values()
+
+    headers = all_values[0]
+
+    title_col = headers.index("title")
+    poster_col = headers.index("poster_url")
+
+    member_cols = [
+        headers.index(member)
+        for member in members
+        if member in headers
+    ]
+
+    movie_counts = []
+
+    for row in all_values[1:]:
+        request_count = 0
+
+        for col in member_cols:
+            if len(row) > col and str(row[col]).upper() == "TRUE":
+                request_count += 1
+
+        if request_count > 0:
+            movie_counts.append({
+                "title": row[title_col],
+                "poster_url": row[poster_col],
+                "request_count": request_count
+            })
+
+    movie_counts.sort(
+        key=lambda movie: movie["request_count"],
+        reverse=True
+    )
+
+    return movie_counts[:limit]
+
+st.subheader("Most Requested:")
+
+most_requested = get_most_requested(limit=4)
+
+if most_requested:
+    cols = st.columns(4)
+
+    for i, movie in enumerate(most_requested):
+        with cols[i]:
+            st.image(
+                movie["poster_url"],
+                width=100
+            )
+
+            if movie["request_count"] == 1:
+                st.caption(f"{movie['title']} (1 Request)")
+            else:
+                st.caption(
+                    f"{movie['title']} ({movie['request_count']} Requests)"
+                )
+else:
+    st.write("No movies requested yet.")
