@@ -2,6 +2,7 @@ import streamlit as st
 import requests
 import gspread
 from google.oauth2.service_account import Credentials
+from datetime import date, timedelta
 
 st.set_page_config(page_title="Gay Nights Theater Trips", page_icon="🎬")
 
@@ -62,24 +63,31 @@ movies = get_now_playing_movies()
 
 @st.cache_data(ttl=60 * 60)
 def get_upcoming_movies():
-    url = "https://api.themoviedb.org/3/movie/upcoming"
+    url = "https://api.themoviedb.org/3/discover/movie"
 
     headers = {
         "Authorization": f"Bearer {TMDB_ACCESS_TOKEN}",
         "accept": "application/json",
     }
 
+    today = date.today()
+    ninety_days_from_now = today + timedelta(days=90)
+
     params = {
         "language": "en-US",
         "region": "US",
         "page": 1,
+        "sort_by": "primary_release_date.asc",
+        "release_date.gte": today.isoformat(),
+        "release_date.lte": ninety_days_from_now.isoformat(),
+        "with_release_type": "2|3",
     }
 
     response = requests.get(url, headers=headers, params=params)
     response.raise_for_status()
 
     total_pages = response.json().get("total_pages", 1)
-    max_pages = min(total_pages, 5)
+    max_pages = min(total_pages, 12)
     all_movies = response.json().get("results", [])
 
     for page in range(2, max_pages + 1):
@@ -320,25 +328,7 @@ if most_requested:
 else:
     st.write("No movies requested yet.")
 
-import streamlit.components.v1 as components
-
-components.html(
-    """
-    <div class="tenor-gif-embed"
-         data-postid="27063004"
-         data-share-method="host"
-         data-aspect-ratio="1.79775"
-         data-width="100%">
-        <a href="https://tenor.com/view/amc-nicole-kidman-heartbreak-gif-27063004">
-            Amc Nicole Kidman GIF
-        </a>
-    </div>
-
-    <script
-        type="text/javascript"
-        async
-        src="https://tenor.com/embed.js">
-    </script>
-    """,
-    height=350,
+st.image(
+    "https://tenor.com/view/amc-nicole-kidman-heartbreak-gif-27063004",
+    use_container_width=True
 )
