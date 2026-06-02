@@ -61,7 +61,7 @@ def get_now_playing_movies():
 movies = get_now_playing_movies()
 
 def get_upcoming_movies():
-    url = "https://api.themoviedb.org/3/movie/upcoming?language=en-US&page=1"
+    url = "https://api.themoviedb.org/3/movie/upcoming"
 
     headers = {
         "Authorization": f"Bearer {TMDB_ACCESS_TOKEN}",
