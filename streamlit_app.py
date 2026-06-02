@@ -250,16 +250,20 @@ if most_requested:
 
     for i, movie in enumerate(most_requested):
         with cols[i]:
-            st.image(
-                movie["poster_url"],
-                width=150
-            )
 
-            if movie["request_count"] == 1:
-                st.caption(f"{movie['title']} (1 Request)")
-            else:
-                st.caption(
-                    f"{movie['title']} ({movie['request_count']} Requests)"
+            left, center, right = st.columns([1, 2, 1])
+
+            with center:
+                st.image(
+                    movie["poster_url"],
+                    width=150
                 )
+
+                if movie["request_count"] == 1:
+                    st.caption(f"{movie['title']} (1 Request)")
+                else:
+                    st.caption(
+                        f"{movie['title']} ({movie['request_count']} Requests)"
+                    )
 else:
     st.write("No movies requested yet.")
