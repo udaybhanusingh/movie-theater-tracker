@@ -246,24 +246,22 @@ st.subheader("Most Requested:")
 most_requested = get_most_requested(limit=4)
 
 if most_requested:
-    cols = st.columns(4)
+    cols = st.columns(4,gap="xxsmall")
 
     for i, movie in enumerate(most_requested):
         with cols[i]:
+            st.image(
+                movie["poster_url"],
+                width=150
+            )
 
-            left, center, right = st.columns([1, 2, 1])
-
-            with center:
-                st.image(
-                    movie["poster_url"],
-                    width=150
+            if movie["request_count"] == 1:
+                st.caption(f"{movie['title']} \n\n(1 Request)")
+            else:
+                st.caption(
+                    f"{movie['title']} \n\n({movie['request_count']} Requests)",
+                    width = 150,
+                    text_alignment="left"
                 )
-
-                if movie["request_count"] == 1:
-                    st.caption(f"{movie['title']} (1 Request)")
-                else:
-                    st.caption(
-                        f"{movie['title']} ({movie['request_count']} Requests)"
-                    )
 else:
     st.write("No movies requested yet.")
