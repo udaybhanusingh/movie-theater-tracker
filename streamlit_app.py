@@ -338,7 +338,7 @@ df = pd.DataFrame(
 )
 
 display_df = df[
-    ["title"] + members
+    [""] + members
 ]
 
 st.dataframe(
