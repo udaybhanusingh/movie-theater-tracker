@@ -351,7 +351,4 @@ for row in display_df.itertuples():
         else:
             display_df.at[row.Index, member] = ""
 
-st.dataframe(
-    display_df,
-    use_container_width=True
-)
+st.table(display_df, height=300)
