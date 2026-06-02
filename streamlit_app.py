@@ -153,7 +153,7 @@ if selected_member is not None:
 
                 st.image(
                     selection["poster_url"],
-                    use_container_width=True
+                    width=100
                 )
 
                 st.caption(selection["title"])
