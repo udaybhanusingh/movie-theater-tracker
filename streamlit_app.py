@@ -3,9 +3,9 @@ import requests
 import gspread
 from google.oauth2.service_account import Credentials
 
-st.set_page_config(page_title="Gay Nights Theater Trips", page_icon="🎬")
+st.set_page_config(page_title="Gay Nights Theater Trips", page_icon="🎬",layout="wide")
 
-st.title("Group Movie Theater Tracker 🍿")
+st.title("Gay Nights at AMC 🍿")
 st.markdown("""
 👤 **Pick your name** and 🎬 **add a movie** you'd like to watch.
 
