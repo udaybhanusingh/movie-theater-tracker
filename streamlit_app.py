@@ -143,23 +143,32 @@ if selected_member is not None:
     user_selections = get_user_selection(selected_member)
 
     if user_selections:
+        for selection in user_selections:
+            text_col, button_col = st.columns([0.99, 0.01],gap="small",vertical_alignment="top")
 
-        num_cols = 4
-        cols = st.columns(num_cols)
-
-        for i, selection in enumerate(user_selections):
-
-            with cols[i % num_cols]:
-
-                st.image(
-                    selection["poster_url"],
-                    width=100
+            with text_col:
+                st.markdown(
+                    f"""
+                    <div style="
+                    padding: 0.3rem 0.75rem;
+                    margin-bottom: 0.05rem;
+                    border-radius: 0.45rem;
+                    border: 1px solid rgba(250,250,250,0.12);
+                    background-color: rgba(250,250,250,0.04);
+                    font-size: 0.95rem;
+                ">
+                        🎬 {selection["title"]}
+                    </div>
+                    """,
+                    unsafe_allow_html=True
                 )
 
-                st.caption(selection["title"])
-
+            with button_col:
                 if st.button(
-                    "✕ Remove",
+                    "",
+                    icon="❌",
+                    width="content",
+                    type="tertiary",
                     key=f"remove_{selected_member}_{selection['row_number']}"
                 ):
                     worksheet = get_worksheet()
@@ -224,7 +233,7 @@ if most_requested:
         with cols[i]:
             st.image(
                 movie["poster_url"],
-                width=100
+                width=150
             )
 
             if movie["request_count"] == 1:
