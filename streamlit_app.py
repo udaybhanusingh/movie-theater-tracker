@@ -160,11 +160,6 @@ with st.container(border=True):
         disabled = selected_member is None
     )
 
-    movie_lookup = {
-        f"{movie['title']} ({movie['release_date'][0:4]})": movie
-        for movie in movies
-    }
-
     if st.button("Add to list", disabled=selected_member is None or selected_movie is None):
         worksheet = get_worksheet()
         movie = movie_lookup[selected_movie]
