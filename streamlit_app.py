@@ -343,6 +343,14 @@ display_df = df[
 
 display_df = display_df.rename(columns={"title": ""})
 
+for row in display_df.itertuples():
+    for member in members:
+        value = getattr(row, member)
+        if str(value).upper() == "TRUE":
+            display_df.at[row.Index, member] = "✅"
+        else:
+            display_df.at[row.Index, member] = ""
+
 st.dataframe(
     display_df,
     use_container_width=True
