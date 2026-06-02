@@ -75,6 +75,7 @@ def get_user_selection(selected_member):
         if len(row) > member_col and str(row[member_col]).upper() == "TRUE":
             selections.append({
                 "title": row[title_col],
+                "poster_url": row[headers.index("poster_url")] if "poster_url" in headers else "",
                 "row_number": row_number,
                 "member_col": member_col + 1
             })
@@ -138,22 +139,38 @@ if st.button("Add to list", disabled=selected_member is None or selected_movie i
 
 if selected_member is not None:
     st.subheader(f"{selected_member}'s Current Selections:")
+
     user_selections = get_user_selection(selected_member)
+
     if user_selections:
-        for selection in user_selections:
-            col1, col2 = st.columns([0.9, 0.1])
 
-            with col1:
-                st.write(f"🎬 {selection['title']}")
+        num_cols = 4
+        cols = st.columns(num_cols)
 
-            with col2:
-                if st.button("✕", key=f"remove_{selected_member}_{selection['row_number']}"):
+        for i, selection in enumerate(user_selections):
+
+            with cols[i % num_cols]:
+
+                st.image(
+                    selection["poster_url"],
+                    use_container_width=True
+                )
+
+                st.caption(selection["title"])
+
+                if st.button(
+                    "✕ Remove",
+                    key=f"remove_{selected_member}_{selection['row_number']}"
+                ):
                     worksheet = get_worksheet()
+
                     worksheet.update_cell(
                         selection["row_number"],
                         selection["member_col"],
                         ""
                     )
+
                     st.rerun()
+
     else:
         st.write("You haven't added any movies yet.")
