@@ -230,8 +230,8 @@ if most_requested:
             if movie["request_count"] == 1:
                 st.caption(f"{movie['title']} (1 Request)")
             else:
-            st.caption(
-                f"{movie['title']} ({movie['request_count']} Requests)"
-            )
+                st.caption(
+                    f"{movie['title']} ({movie['request_count']} Requests)"
+                )
 else:
     st.write("No movies requested yet.")
