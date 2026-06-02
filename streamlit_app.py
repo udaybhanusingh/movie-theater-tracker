@@ -5,8 +5,16 @@ from google.oauth2.service_account import Credentials
 
 st.set_page_config(page_title="Gay Nights Theater Trips", page_icon="🎬")
 
-st.title("Theater Trips")
-st.write("Now playing movies from TMDb")
+st.title("Group Movie Theater Tracker 🍿")
+st.markdown("""
+👤 **Pick your name** and 🎬 **add a movie** you'd like to watch.
+
+❌ Remove selections anytime.
+
+🕒 Movies are updated daily from current U.S. theater showings.
+
+🔥 See **Most Requested** below to discover the group's top picks.
+""")
 
 TMDB_ACCESS_TOKEN = st.secrets["TMDB_ACCESS_TOKEN"]
 GOOGLE_SHEET_ID = st.secrets["GOOGLE_SHEET_ID"]
