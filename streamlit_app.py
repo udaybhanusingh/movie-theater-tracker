@@ -7,11 +7,11 @@ st.set_page_config(page_title="Gay Nights Theater Trips", page_icon="🎬")
 
 st.markdown("""
 <div style="
-    padding: 1.5rem 1.75rem;
+    padding: 0.25rem 2rem;
     border-radius: 1rem;
     background: linear-gradient(135deg, rgba(255,105,180,0.18), rgba(138,43,226,0.16));
     border: 1px solid rgba(255,255,255,0.12);
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
 ">
 <h1 style="margin-bottom: 0.5rem;">Gay Nights at AMC 🍿</h1>
 <p style="font-size: 1.1rem;">
