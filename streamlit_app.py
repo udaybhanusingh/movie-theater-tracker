@@ -222,6 +222,13 @@ def get_most_requested(limit=4):
 
     for row in all_values[1:]:
         request_count = 0
+        requesters = []
+
+        for col in member_cols:
+            if len(row) > col and str(row[col]).upper() == "TRUE":
+                requesters.append(headers[col])
+
+        request_count = len(requesters)
 
         for col in member_cols:
             if len(row) > col and str(row[col]).upper() == "TRUE":
@@ -229,10 +236,11 @@ def get_most_requested(limit=4):
 
         if request_count > 0:
             movie_counts.append({
-                "title": row[title_col],
-                "poster_url": row[poster_col],
-                "request_count": request_count
-            })
+            "title": row[title_col],
+            "poster_url": row[poster_col],
+            "request_count": request_count,
+            "requesters": requesters
+        })
 
     movie_counts.sort(
         key=lambda movie: movie["request_count"],
@@ -241,12 +249,13 @@ def get_most_requested(limit=4):
 
     return movie_counts[:limit]
 
+
 st.subheader("Most Requested:")
 
 most_requested = get_most_requested(limit=4)
 
 if most_requested:
-    cols = st.columns(4,gap="xxsmall")
+    cols = st.columns(4, gap="xxsmall")
 
     for i, movie in enumerate(most_requested):
         with cols[i]:
@@ -255,19 +264,22 @@ if most_requested:
                 width=150
             )
 
+            st.caption(movie["title"])
 
-            if movie["request_count"] == 1:
-                st.caption(f"{movie['title']} | (1 Request)",
-                width = 150,
-                text_alignment="left")
-            else:
-                st.caption(
-                    f"{movie['title']} | ({movie['request_count']} Requests)",
-                    width = 150,
-                    text_alignment="left"
-                )
+            request_word = (
+                "Request"
+                if movie["request_count"] == 1
+                else "Requests"
+            )
+
+            with st.popover(
+                f"👥 {movie['request_count']} {request_word}"
+            ):
+                for requester in movie["requesters"]:
+                    st.write(f"👤 {requester}")
+
 else:
-    st.write("No movies requested yet.", width=300)
+    st.write("No movies requested yet.")
 
 import streamlit.components.v1 as components
 
