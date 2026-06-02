@@ -201,6 +201,8 @@ if selected_member is not None:
     else:
         st.write("You haven't added any movies yet.")
 
+st.divider()
+
 def get_most_requested(limit=4):
     worksheet = get_worksheet()
     all_values = worksheet.get_all_values()
