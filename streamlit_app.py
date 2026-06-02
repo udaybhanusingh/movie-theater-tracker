@@ -254,7 +254,7 @@ if most_requested:
                 movie["poster_url"],
                 width=150
             )
-        
+
 
             if movie["request_count"] == 1:
                 st.caption(f"{movie['title']} | (1 Request)",
@@ -267,4 +267,27 @@ if most_requested:
                     text_alignment="left"
                 )
 else:
-    st.write("No movies requested yet.")
+    st.write("No movies requested yet.", width=300)
+
+import streamlit.components.v1 as components
+
+components.html(
+    """
+    <div class="tenor-gif-embed"
+         data-postid="27063004"
+         data-share-method="host"
+         data-aspect-ratio="1.79775"
+         data-width="100%">
+        <a href="https://tenor.com/view/amc-nicole-kidman-heartbreak-gif-27063004">
+            Amc Nicole Kidman GIF
+        </a>
+    </div>
+
+    <script
+        type="text/javascript"
+        async
+        src="https://tenor.com/embed.js">
+    </script>
+    """,
+    height=350,
+)
