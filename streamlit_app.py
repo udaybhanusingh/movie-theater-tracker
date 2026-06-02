@@ -18,7 +18,7 @@ st.markdown("""
 <p style="font-size: 1.1rem;">
 👤 <b>Pick your name</b> and 🎬 <b>add a movie</b> you'd like to watch.<br>
 ❌ Remove selections anytime.<br>
-🕒 Movies update daily from current U.S. theater showings.<br>
+🕒 Movies update daily: anything currently showing or being released in the next 90 days.<br>
 🔥 See <b>Most Requested</b> below to find the group's top picks.
 </p>
 </div>
