@@ -254,12 +254,36 @@ if most_requested:
                 movie["poster_url"],
                 width=150
             )
+    cols = st.columns(4, gap="xxsmall")
+
+        # Inject CSS to center images horizontally inside their containers
+    st.markdown(
+            """
+            <style>
+            [data-testid="stImage"] {
+                display: flex;
+                justify-content: center;
+            }
+            </style>
+            """,
+            unsafe_allow_html=True
+        )
+
+    for i, movie in enumerate(most_requested):
+        with cols[i]:
+            st.image(
+                    movie["poster_url"],
+                    width=150
+                )
+
 
             if movie["request_count"] == 1:
-                st.caption(f"{movie['title']} \n\n(1 Request)")
+                st.caption(f"{movie['title']} | (1 Request)",
+                width = 150,
+                text_alignment="left")
             else:
                 st.caption(
-                    f"{movie['title']} \n\n({movie['request_count']} Requests)",
+                    f"{movie['title']} | ({movie['request_count']} Requests)",
                     width = 150,
                     text_alignment="left"
                 )
