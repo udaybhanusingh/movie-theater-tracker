@@ -3,18 +3,25 @@ import requests
 import gspread
 from google.oauth2.service_account import Credentials
 
-st.set_page_config(page_title="Gay Nights Theater Trips", page_icon="🎬",layout="wide")
+st.set_page_config(page_title="Gay Nights Theater Trips", page_icon="🎬")
 
-st.title("Gay Nights at AMC 🍿")
 st.markdown("""
-👤 **Pick your name** and 🎬 **add a movie** you'd like to watch.
-
-❌ Remove selections anytime.
-
-🕒 Movies are updated daily from current U.S. theater showings.
-
-🔥 See **Most Requested** below to discover the group's top picks.
-""")
+<div style="
+    padding: 1.5rem 1.75rem;
+    border-radius: 1rem;
+    background: linear-gradient(135deg, rgba(255,105,180,0.18), rgba(138,43,226,0.16));
+    border: 1px solid rgba(255,255,255,0.12);
+    margin-bottom: 1.5rem;
+">
+<h1 style="margin-bottom: 0.5rem;">Gay Nights at AMC 🍿</h1>
+<p style="font-size: 1.1rem;">
+👤 <b>Pick your name</b> and 🎬 <b>add a movie</b> you'd like to watch.<br>
+❌ Remove selections anytime.<br>
+🕒 Movies update daily from current U.S. theater showings.<br>
+🔥 See <b>Most Requested</b> below to find the group's top picks.
+</p>
+</div>
+""", unsafe_allow_html=True)
 
 TMDB_ACCESS_TOKEN = st.secrets["TMDB_ACCESS_TOKEN"]
 GOOGLE_SHEET_ID = st.secrets["GOOGLE_SHEET_ID"]
