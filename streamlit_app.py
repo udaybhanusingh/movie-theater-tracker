@@ -67,90 +67,92 @@ movie_titles = [
 members = ['Uday','Francisco','Abel','John','Yael','Rory','Rodrigo','Ricky','Mercedes','Tyra']
 members.sort()
 
-selected_member = st.selectbox(
-    "Who are you?:",
-    members,
-    index=None,
-    placeholder="Select...",
-    accept_new_options = False
-)
+with st.container(border=True):
 
-def get_user_selection(selected_member):
-    worksheet = get_worksheet()
-    all_values = worksheet.get_all_values()
+    selected_member = st.selectbox(
+        "Who are you?:",
+        members,
+        index=None,
+        placeholder="Select...",
+        accept_new_options = False
+    )
 
-    headers = all_values[0]
+    def get_user_selection(selected_member):
+        worksheet = get_worksheet()
+        all_values = worksheet.get_all_values()
 
-    title_col = headers.index("title")
-    member_col = headers.index(selected_member)
+        headers = all_values[0]
 
-    selections = []
+        title_col = headers.index("title")
+        member_col = headers.index(selected_member)
 
-    for row_number, row in enumerate(all_values[1:], start=2):
-        if len(row) > member_col and str(row[member_col]).upper() == "TRUE":
-            selections.append({
-                "title": row[title_col],
-                "poster_url": row[headers.index("poster_url")] if "poster_url" in headers else "",
-                "row_number": row_number,
-                "member_col": member_col + 1
-            })
+        selections = []
 
-    return selections
+        for row_number, row in enumerate(all_values[1:], start=2):
+            if len(row) > member_col and str(row[member_col]).upper() == "TRUE":
+                selections.append({
+                    "title": row[title_col],
+                    "poster_url": row[headers.index("poster_url")] if "poster_url" in headers else "",
+                    "row_number": row_number,
+                    "member_col": member_col + 1
+                })
 
-selected_movie = st.selectbox(
-    "What do you wanna watch?",
-    movie_titles,
-    index=None,
-    placeholder="Select...",
-    accept_new_options = False,
-    disabled = selected_member is None
-)
+        return selections
 
-movie_lookup = {
-    f"{movie['title']} ({movie['release_date'][0:4]})": movie
-    for movie in movies
-}
+    selected_movie = st.selectbox(
+        "What do you wanna watch?",
+        movie_titles,
+        index=None,
+        placeholder="Select...",
+        accept_new_options = False,
+        disabled = selected_member is None
+    )
 
-if st.button("Add to list", disabled=selected_member is None or selected_movie is None):
-    worksheet = get_worksheet()
-    movie = movie_lookup[selected_movie]
+    movie_lookup = {
+        f"{movie['title']} ({movie['release_date'][0:4]})": movie
+        for movie in movies
+    }
 
-    all_values = worksheet.get_all_values()
-    headers = all_values[0]
-
-    tmdb_id_col = headers.index("tmdb_id") + 1
-    member_col = headers.index(selected_member) + 1
-
-    movie_row = None
-
-    for row_number, row in enumerate(all_values[1:], start=2):
-        if row[tmdb_id_col - 1] == str(movie["id"]):
-            movie_row = row_number
-            break
-
-    if movie_row is None:
-        poster_url = ""
-        if movie.get("poster_path"):
-            poster_url = f"https://image.tmdb.org/t/p/w500{movie['poster_path']}"
-
-        new_row = [""] * len(headers)
-        new_row[headers.index("tmdb_id")] = movie["id"]
-        new_row[headers.index("title")] = movie["title"]
-        new_row[headers.index("release_date")] = movie.get("release_date", "")
-        new_row[headers.index("poster_url")] = poster_url
-
-        worksheet.append_row(new_row)
+    if st.button("Add to list", disabled=selected_member is None or selected_movie is None):
+        worksheet = get_worksheet()
+        movie = movie_lookup[selected_movie]
 
         all_values = worksheet.get_all_values()
-        movie_row = len(all_values)
-    
-    if worksheet.cell(movie_row, member_col).value != "TRUE":
-        worksheet.update_cell(movie_row, member_col, "TRUE")
-    else:
-        st.warning(f"{selected_member} has already added {movie['title']}.")
-        st.stop()
+        headers = all_values[0]
 
-    st.success(f"Added {movie['title']} for {selected_member}.")
+        tmdb_id_col = headers.index("tmdb_id") + 1
+        member_col = headers.index(selected_member) + 1
+
+        movie_row = None
+
+        for row_number, row in enumerate(all_values[1:], start=2):
+            if row[tmdb_id_col - 1] == str(movie["id"]):
+                movie_row = row_number
+                break
+
+        if movie_row is None:
+            poster_url = ""
+            if movie.get("poster_path"):
+                poster_url = f"https://image.tmdb.org/t/p/w500{movie['poster_path']}"
+
+            new_row = [""] * len(headers)
+            new_row[headers.index("tmdb_id")] = movie["id"]
+            new_row[headers.index("title")] = movie["title"]
+            new_row[headers.index("release_date")] = movie.get("release_date", "")
+            new_row[headers.index("poster_url")] = poster_url
+
+            worksheet.append_row(new_row)
+
+            all_values = worksheet.get_all_values()
+            movie_row = len(all_values)
+        
+        if worksheet.cell(movie_row, member_col).value != "TRUE":
+            worksheet.update_cell(movie_row, member_col, "TRUE")
+        else:
+            st.warning(f"{selected_member} has already added {movie['title']}.")
+            st.stop()
+
+        st.success(f"Added {movie['title']} for {selected_member}.")
 
 if selected_member is not None:
     st.subheader(f"{selected_member}'s Current Selections:")
