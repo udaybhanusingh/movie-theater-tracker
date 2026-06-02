@@ -255,7 +255,7 @@ st.subheader("Most Requested:")
 most_requested = get_most_requested(limit=4)
 
 if most_requested:
-    cols = st.columns(4, gap="xxsmall")
+    cols = st.columns(4, gap="xxsmall",border=True)
 
     for i, movie in enumerate(most_requested):
         with cols[i]:
