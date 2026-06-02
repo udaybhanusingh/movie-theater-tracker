@@ -60,6 +60,27 @@ selected_member = st.selectbox(
     accept_new_options = False
 )
 
+def get_user_selection(selected_member):
+    worksheet = get_worksheet()
+    all_values = worksheet.get_all_values()
+
+    headers = all_values[0]
+
+    title_col = headers.index("title")
+    member_col = headers.index(selected_member)
+
+    selections = []
+
+    for row_number, row in enumerate(all_values[1:], start=2):
+        if len(row) > member_col and str(row[member_col]).upper() == "TRUE":
+            selections.append({
+                "title": row[title_col],
+                "row_number": row_number,
+                "member_col": member_col + 1
+            })
+
+    return selections
+
 selected_movie = st.selectbox(
     "What do you wanna watch?",
     movie_titles,
@@ -107,6 +128,32 @@ if st.button("Add to list", disabled=selected_member is None or selected_movie i
         all_values = worksheet.get_all_values()
         movie_row = len(all_values)
     
-    worksheet.update_cell(movie_row, member_col, "TRUE")
+    if worksheet.cell(movie_row, member_col).value != "TRUE":
+        worksheet.update_cell(movie_row, member_col, "TRUE")
+    else:
+        st.warning(f"{selected_member} has already added {movie['title']}.")
+        st.stop()
 
     st.success(f"Added {movie['title']} for {selected_member}.")
+
+if selected_member is not None:
+    st.subheader(f"{selected_member}'s Current Selections:")
+    user_selections = get_user_selection(selected_member)
+    if user_selections:
+        for selection in user_selections:
+            col1, col2 = st.columns([0.9, 0.1])
+
+            with col1:
+                st.write(f"🎬 {selection['title']}")
+
+            with col2:
+                if st.button("✕", key=f"remove_{selected_member}_{selection['row_number']}"):
+                    worksheet = get_worksheet()
+                    worksheet.update_cell(
+                        selection["row_number"],
+                        selection["member_col"],
+                        ""
+                    )
+                    st.rerun()
+    else:
+        st.write("You haven't added any movies yet.")
