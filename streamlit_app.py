@@ -137,6 +137,111 @@ if st.button("Add to list", disabled=selected_member is None or selected_movie i
 
     st.success(f"Added {movie['title']} for {selected_member}.")
 
+
+
+def get_most_requested(limit=4):
+    worksheet = get_worksheet()
+    all_values = worksheet.get_all_values()
+
+    headers = all_values[0]
+
+    title_col = headers.index("title")
+    poster_col = headers.index("poster_url")
+
+    member_cols = [
+        headers.index(member)
+        for member in members
+        if member in headers
+    ]
+
+    movie_counts = []
+
+    for row in all_values[1:]:
+        request_count = 0
+
+        for col in member_cols:
+            if len(row) > col and str(row[col]).upper() == "TRUE":
+                request_count += 1
+
+        if request_count > 0:
+            movie_counts.append({
+                "title": row[title_col],
+                "poster_url": row[poster_col],
+                "request_count": request_count
+            })
+
+    movie_counts.sort(
+        key=lambda movie: movie["request_count"],
+        reverse=True
+    )
+
+    return movie_counts[:limit]
+
+
+if selected_member is not None:
+    user_selections = get_user_selection(selected_member)
+    most_requested = get_most_requested(limit=4)
+
+    left_col, right_col = st.columns(2)
+
+    with left_col:
+        st.subheader(f"{selected_member}'s Current Selections:")
+
+        if user_selections:
+            cols = st.columns(2)
+
+            for i, selection in enumerate(user_selections):
+                with cols[i % 2]:
+                    st.image(
+                        selection["poster_url"],
+                        width=100
+                    )
+
+                    st.caption(selection["title"])
+
+                    if st.button(
+                        "✕ Remove",
+                        key=f"remove_{selected_member}_{selection['row_number']}"
+                    ):
+                        worksheet = get_worksheet()
+
+                        worksheet.update_cell(
+                            selection["row_number"],
+                            selection["member_col"],
+                            ""
+                        )
+
+                        st.rerun()
+        else:
+            st.write("You haven't added any movies yet.")
+
+    with right_col:
+        st.subheader("Most Requested:")
+
+        if most_requested:
+            cols = st.columns(2)
+
+            for i, movie in enumerate(most_requested):
+                with cols[i % 2]:
+                    st.image(
+                        movie["poster_url"],
+                        width=100
+                    )
+
+                    request_word = (
+                        "Request"
+                        if movie["request_count"] == 1
+                        else "Requests"
+                    )
+
+                    st.caption(
+                        f"{movie['title']} ({movie['request_count']} {request_word})"
+                    )
+        else:
+            st.write("No movies requested yet.")
+
+
+
 if selected_member is not None:
     st.subheader(f"{selected_member}'s Current Selections:")
 
