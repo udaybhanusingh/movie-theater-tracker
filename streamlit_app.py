@@ -328,7 +328,7 @@ if most_requested:
 else:
     st.write("No movies requested yet.")
 
-st.image(
-    "https://tenor.com/view/amc-nicole-kidman-heartbreak-gif-27063004",
-    use_container_width=True
+st.iframe(
+    "https://tenor.com/embed/27063004",
+    height=350
 )
