@@ -144,7 +144,7 @@ if selected_member is not None:
 
     if user_selections:
         for selection in user_selections:
-            text_col, button_col = st.columns([0.99, 0.01],gap="small",vertical_alignment="top",width=100)
+            text_col, button_col = st.columns([0.99, 0.01],gap="small",vertical_alignment="top",width=400)
 
             with text_col:
                 st.markdown(
