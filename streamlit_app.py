@@ -338,8 +338,10 @@ df = pd.DataFrame(
 )
 
 display_df = df[
-    [""] + members
+    ["title"] + members
 ]
+
+display_df = display_df.rename(columns={"title": ""})
 
 st.dataframe(
     display_df,
