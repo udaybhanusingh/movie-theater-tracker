@@ -60,9 +60,45 @@ def get_now_playing_movies():
 
 movies = get_now_playing_movies()
 
-movie_titles = [
+def get_upcoming_movies():
+    url = "https://api.themoviedb.org/3/movie/upcoming?language=en-US&page=1"
+
+    headers = {
+        "Authorization": f"Bearer {TMDB_ACCESS_TOKEN}",
+        "accept": "application/json",
+    }
+
+    params = {
+        "language": "en-US",
+        "region": "US",
+        "page": 1,
+    }
+
+    response = requests.get(url, headers=headers, params=params)
+    response.raise_for_status()
+
+    total_pages = response.json().get("total_pages", 1)
+    all_movies = response.json().get("results", [])
+
+    for page in range(2, total_pages + 1):
+        params["page"] = page
+        response = requests.get(url, headers=headers, params=params)
+        response.raise_for_status()
+        all_movies.extend(response.json().get("results", []))
+
+    return all_movies
+
+upcoming_movies = get_upcoming_movies()
+
+now_showing_movie_titles = [
     f"{movie['title']} ({movie['release_date'][0:4]})"
     for movie in movies]
+
+upcoming_movie_titles = [
+    f"{movie['title']} ({movie['release_date'][0:4]})"
+    for movie in upcoming_movies]
+
+movie_titles = now_showing_movie_titles + upcoming_movie_titles
 
 members = ['Uday','Francisco','Abel','John','Yael','Rory','Rodrigo','Ricky','Mercedes','Tyra']
 members.sort()
